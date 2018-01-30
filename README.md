@@ -1,38 +1,60 @@
-Role Name
+ansible _connector
 =========
 
-A brief description of the role goes here.
+This role can be used to install Actifio Connector on RedHat Linux variants. The role will ensure all the required pre-requisite packages and configurations are inplace. 
 
-Requirements
-------------
+The role can be used to install individual physical hosts, and add them to the Actifio Appliance or discover the new host using VMware host discovery method.  
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Requirement
+===========
+
+Would require CDS/Sky 8.0 for the full functionality to complete the iSCSI testing to the host.
+
+For CDS/SKy 7.1, Connector port might need to be updated manually, due to a bug fixed in 8.0. 
+
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+This role will require/accept the following variables.
 
-Dependencies
-------------
+| Variable Name  | Description | Required (Y/N) |
+|----------------|---|---|
+| act_appliance  | Actifio Appliance IP or FQDN. | Y               |
+| act_user       | Actifio username. This should be a Actifio user with System Manage priviledges | Y
+| act_pass       | Password for the Actifio User | Y
+| act_vendorkey  | Vendor key can be obtained by the customer through opening a Support Case with the CSE. | Y
+| discover_as_vm | Whether to discover the new host as a VM or add as a physical host. If Yes, then VM discovery routines are executed, if not specified, default option (no) will be assumed and define as a physical host | N
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Example Playbook:
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```
+- name: install and configure actifio agent
+  hosts: "{{ host_group }}"
+  become: yes
+  become_method: sudo
+  roles:
+    - actifio_agent
+```
+
+This will work with the following inventory:
+
+[actifio]
+local-ora-1 act_appliance=192.168.57.128 act_user=admin act_pass=password act_vendorkey=XXX
+local-ora-2 act_appliance=192.168.57.128 act_user=admin act_pass=password act_vendorkey=XXX discover_as_vm=yes
+
 
 License
 -------
 
-BSD
+Copyright 2018 <Kosala Atapattu kosala.atapattu@actifio.com>
 
-Author Information
-------------------
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
