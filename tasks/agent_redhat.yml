@@ -21,7 +21,7 @@
       template: src=vmware.repo.j2 dest=/etc/yum.repos.d/vmware.repo
   
     - name: install the vmtools
-      yum: name=vmware-tools-esx-nox state=present
+      yum: name=vmware-tools-esx-nox state=present update_cache=yes
   when: ansible_distribution_major_version == "6" 
 
 - name: install the udsagent

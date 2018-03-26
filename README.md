@@ -1,4 +1,4 @@
-ansible _connector
+ansible_connector_install
 =========
 
 This role can be used to install Actifio Connector on RedHat Linux variants. The role will ensure all the required pre-requisite packages and configurations are inplace. 

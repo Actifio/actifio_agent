@@ -42,7 +42,7 @@
 
 - name: check whether the entry exisit
   uri:
-    url: "{{ act_api_info }}/lshost?filtervalue=hostname={{ inventory_hostname }}&alternateip={{ ansible_host }}&sessionid={{ logintoken.json.sessionid }}"
+    url: "{{ act_api_info }}/lshost?filtervalue=hostname={{ inventory_hostname }}&ipaddress={{ ansible_host }}&sessionid={{ logintoken.json.sessionid }}"
     validate_certs: no  
   register: lshost    
 
