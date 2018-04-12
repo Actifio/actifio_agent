@@ -4,21 +4,15 @@
   command: awk -F= '{if ($1 != "#") { if ($1 ~ /InitiatorName/) print $2}}' /etc/iscsi/initiatorname.iscsi
   register: iscsi_iqn
 
-- name: generate authentication token
-  uri:
-    url: "{{ act_api_login }}"
-    validate_certs: no  
-  register: logintoken
-
 - name: check whether the entry exist
   uri:
-    url: "{{ act_api_info }}/lshost?filtervalue=hostname={{ inventory_hostname }}&alternateip={{ ansible_host }}&sessionid={{ logintoken.json.sessionid }}"
+    url: "{{ act_api_info }}/lshost?filtervalue=hostname={{ inventory_hostname }}&alternateip={{ ansible_host }}&sessionid={{ act_sessionid }}"
     validate_certs: no  
   register: lshost    
 
 - name: create new actifio host entry
   uri:
-    url: "{{ act_api_task }}/mkhost?{{ mkhost_hostname }}&{{ mkhost_friendly }}&{{ mkhost_ip }}&{{ mkhost_iscsi }}&{{ mkhost_port }}&sessionid={{ logintoken.json.sessionid }}"
+    url: "{{ act_api_task }}/mkhost?{{ mkhost_hostname }}&{{ mkhost_friendly }}&{{ mkhost_ip }}&{{ mkhost_iscsi }}&{{ mkhost_port }}&sessionid={{ act_sessionid }}"
     validate_certs: no  
     method: POST
   vars:
@@ -32,7 +26,7 @@
 
 - name: update actifio host entry (since the host is already defined)
   uri:
-    url: "{{ act_api_task }}/chhost?{{ chhost_iscsi }}&sessionid={{ logintoken.json.sessionid }}&argument={{ lshost.json.result[0].id }}"
+    url: "{{ act_api_task }}/chhost?{{ chhost_iscsi }}&sessionid={{ act_sessionid }}&argument={{ lshost.json.result[0].id }}"
     validate_certs: no  
     method: POST
   vars:
@@ -42,13 +36,13 @@
 
 - name: check whether the entry exisit
   uri:
-    url: "{{ act_api_info }}/lshost?filtervalue=hostname={{ inventory_hostname }}&alternateip={{ ansible_host }}&sessionid={{ logintoken.json.sessionid }}"
+    url: "{{ act_api_info }}/lshost?filtervalue=hostname={{ inventory_hostname }}&alternateip={{ ansible_host }}&sessionid={{ act_sessionid }}"
     validate_certs: no  
   register: lshost    
 
 - name: test iscsi connection
   uri:
-    url: "{{ act_api_task }}/iscsitest?host={{ lshost.json.result[0].id }}&iscsiports={{ iscsi_iqn.stdout }}&sessionid={{ logintoken.json.sessionid }}"
+    url: "{{ act_api_task }}/iscsitest?host={{ lshost.json.result[0].id }}&iscsiports={{ iscsi_iqn.stdout }}&sessionid={{ act_sessionid }}"
     validate_certs: no
     timeout: 300
     method: POST

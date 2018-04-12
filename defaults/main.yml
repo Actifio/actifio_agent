@@ -11,6 +11,8 @@ act_vendorkey: ''
 
 discover_as_vm: no
 
+discover_apps: yes
+
 act_agent_type: '' 
 
 
