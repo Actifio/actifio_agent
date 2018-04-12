@@ -1,0 +1,14 @@
+---
+
+- name: capture hostid based on the ip address
+  uri:
+    url: "{{ act_api_info }}/lshost?filtervalue=ipaddress={{ ansible_host}}&sessionid={{ act_sessionid }}"
+    validate_certs: no
+  register: lshost
+
+- name: discover applications on the host
+  uri:
+    url: "{{ act_api_task }}/appdiscovery?host={{ lshost.json.result[0].id }}&sessionid={{ act_sessionid }}"
+    validate_certs: no
+    method: POST
+    
