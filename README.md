@@ -38,14 +38,14 @@ Example Playbook:
   become: yes
   become_method: sudo
   roles:
-    - actifio_agent
+    - ansible_connector_install
 ```
 
 This will work with the following inventory:
 
 [actifio]
-local-ora-1 act_appliance=192.168.57.128 act_user=admin act_pass=password act_vendorkey=XXX
-local-ora-2 act_appliance=192.168.57.128 act_user=admin act_pass=password act_vendorkey=XXX discover_as_vm=yes
+local-ora-1 act_appliance=192.168.57.128 act_user=admin act_pass=password act_vendorkey=XXXX-XXXX...
+local-ora-2 act_appliance=192.168.57.128 act_user=admin act_pass=password act_vendorkey=XXXX-XXXX... discover_as_vm=yes
 
 
 License
