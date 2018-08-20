@@ -32,6 +32,18 @@ Example Playbook
 
 Example Playbook:
 
+### If you grab it from the Ansible Galaxy"
+```
+- name: install and configure actifio agent
+  hosts: "{{ host_group }}"
+  become: yes
+  become_method: sudo
+  roles:
+    - Actifio.connector_install
+```
+
+### If you clone from GitHub
+
 ```
 - name: install and configure actifio agent
   hosts: "{{ host_group }}"
@@ -40,6 +52,7 @@ Example Playbook:
   roles:
     - ansible_connector_install
 ```
+
 
 This will work with the following inventory:
 
