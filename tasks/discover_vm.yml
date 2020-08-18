@@ -1,34 +1,38 @@
 ---
 
 - name: list registered vcenters
-  uri: 
+  uri:
     url: "{{ act_api_info }}/lshost?filtervalue=hosttype=vcenter&sessionid={{ act_sessionid }}"
     validate_certs: no
   register: lshost
+  check_mode: no
 
-- name: discover clusters 
+- name: discover clusters
   uri:
     url: "{{ act_api_task }}/vmdiscovery?discoverclusters&host={{ item.id }}&sessionid={{ act_sessionid }}"
     validate_certs: no
     method: POST
   register: vmdiscovery
   with_items: "{{ lshost.json.result }}"
+  check_mode: no
 
 - name: discover vms
   uri:
-    url: "{{ act_api_task }}/vmdiscovery?discovervms&host={{ item.item.id }}&cluster={{ item.json.result[0].name }}&sessionid={{ act_sessionid}}"
+    url: "{{ act_api_task }}/vmdiscovery?discovervms&host={{ item.0.item.id }}&cluster={{ item.1.name }}&sessionid={{ act_sessionid }}"
     validate_certs: no
     method: POST
   register: vmdiscovery_vms
-  with_items: "{{ vmdiscovery.results }}"
+  with_subelements:
+    - "{{ vmdiscovery.results }}"
+    - json.result
+  check_mode: no
 
 - name: add the vms to the appliance
   uri:
-    url: "{{ act_api_task }}/vmdiscovery?addvms&host={{ item.0.item.item.id }}&cluster={{ item.0.item.json.result[0].name }}&vms={{ item.1.vmname }}&sessionid={{ act_sessionid }}"
+    url: "{{ act_api_task }}/vmdiscovery?addvms&host={{ item.0.item.0.item.id }}&cluster={{ item.0.item.1.name }}&vms={{ item.1.vmname }}&sessionid={{ act_sessionid }}"
     validate_certs: no
     method: POST
-  when: item.1.ipaddress == "{{ ansible_host }}"
-  with_subelements: 
+  when: item.1.ipaddress == ansible_host
+  with_subelements:
     - "{{ vmdiscovery_vms.results }}"
     - json.result
-
